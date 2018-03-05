@@ -21,6 +21,7 @@ class Balloon {
 
   void display() {
     getP();
+    s = (l+2);
     noStroke();
     imageMode(CENTER);
     if (l == 0) {
@@ -29,15 +30,17 @@ class Balloon {
       image(blue, x, y, 60, 75);
     } else if (l == 2) {
       image(green, x, y, 68, 85);
+    } else if(l == 3){
+      image(yellow, x, y, 76, 95);
     }
     
   }
   void move() {
     for (Point p : paths[pathOn].points) {
-      if (dist(this.x, this.y, p.x, p.y) < 4) {
+      if (dist(this.x, this.y, p.x, p.y) < s) {
         dir = p.dir;
         if(p.be == 2){
-          health--;
+          health-=(l+1);
           l = -1;
         }
         
@@ -45,8 +48,8 @@ class Balloon {
     }
     x += (s*dir.x);
     y += (s*dir.y);
-    distance.x += (s*dir.x);
-    distance.y += (s*dir.y);
+    distance.x += Math.abs(s*dir.x);
+    distance.y += Math.abs(s*dir.y);
   }
   
   void think(){

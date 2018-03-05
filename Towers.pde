@@ -15,14 +15,14 @@ class Tower {
 class GunMonkey extends Tower {
   float x;
   float y;
-  float reloadc = 50;
+  float reloadc = 20;
   float reload = reloadc;
   Pair targ;
   float maxdist;
   int maxpos;
   float rot = 0;
   float shotspeed = 30;
-  float range = 1300;
+  float range = 800;
 
   GunMonkey(float ex, float why) {
     super(ex, why);
@@ -51,8 +51,8 @@ class GunMonkey extends Tower {
     maxpos = 0;
     for (int p = 0; p < balloons.length; p++) {
       if (dist(balloons[p].x, balloons[p].y, x, y) < range/2) { 
-        if (sqrt(sq(balloons[p].distance.x)+sq(balloons[p].distance.y)) > maxdist) {
-          maxdist = sqrt(sq(balloons[p].distance.x)+sq(balloons[p].distance.y));
+        if (balloons[p].distance.x+balloons[p].distance.y > maxdist) {
+          maxdist = balloons[p].distance.x+balloons[p].distance.y;
           maxpos = p;
         }
       }
@@ -64,7 +64,7 @@ class GunMonkey extends Tower {
 
   void shoot() {
     if (reload == 0) {
-      proj.add(new Projectile(x, y, shotspeed*cos(rot), shotspeed*sin(rot), 6, 1, 0)); 
+      proj.add(new Projectile(x, y, shotspeed*cos(rot), shotspeed*sin(rot), 4, 500, 0)); 
       reload = reloadc;
     }
     if (reload > 0) {
@@ -83,9 +83,11 @@ class GunMonkey extends Tower {
   
   float predictTarg(){
     float r = 0;
+    
     Balloon targB = balloons[maxpos];
-    float fx = targB.x + (3*targB.s*targB.dir.x);
-    float fy = targB.y + (2*targB.s*targB.dir.y);
+    float frameTravel = dist(targB.x, targB.y, x, y)/shotspeed;
+    float fx = targB.x + (frameTravel*targB.s*targB.dir.x);
+    float fy = targB.y + (frameTravel*targB.s*targB.dir.y);
     r = atan2(fy-y, fx-x);
     
     return r;

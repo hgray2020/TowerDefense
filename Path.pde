@@ -24,6 +24,10 @@ class Point {
     ps = _ps;
    
   }
+  
+  String prin(){
+     return (x+", "+y+", "+dir.x+", "+dir.y);  
+  }
 
   void display() {
     arr = paths[ps].points;
@@ -33,20 +37,23 @@ class Point {
     point(x, y);
     
     strokeWeight(10);
-    if (be < 2 && p+1 < arr.length) {
+    if (be <= 2 && p > 0) {
       
-      line(x, y, arr[p+1].x, arr[p+1].y);
+      line(x, y, arr[p-1].x, arr[p-1].y);
     }
     if(be == 3){
+      
       line(x, y, arr[0].x, arr[0].y);  
     }
   }
 
   void getP() {
     for (int i = 0; i < arr.length; i++) {
+      
       if (arr[i].x == this.x && arr[i].y == this.y && this.be == arr[i].be) {
         p = i;
       }
+      
     }
   }
 }

@@ -35,7 +35,7 @@ class Projectile {
 
   void collide() {
     for (Balloon b : balloons) {
-      if (dist(b.x, b.y, this.x, this.y) < 50) {
+      if (dist(b.x, b.y, this.x, this.y) < 50 && recover == 0) {
         println("ye");
         if (b.recover == 0) {
           println("yeeee");
