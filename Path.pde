@@ -6,7 +6,7 @@ class Path {
     points = p;
   }
 
-  boolean pointInPath(Pair point) {
+  boolean pointInPath(Pair point, int radius) {
     boolean inpath = false;
     for (int p = 0; p < points.length-1; p++) {
       float m = 0;
@@ -16,22 +16,43 @@ class Path {
           m = (points[p].y-points[p+1].y)/(points[p].x-points[p+1].x);
         } else {
           if (points[p].y > points[p+1].y) {
-            if (point.x > points[p].x-50 && point.x < points[p].x+50 && point.y > points[p+1].y && point.y < points[p].y) {
+            if (point.x > points[p].x-(radius/2) && point.x < points[p].x+(radius/2) && point.y > points[p+1].y && point.y < points[p].y) {
               return true;
             }
           } else {
-            if (point.x > points[p].x-50 && point.x < points[p].x+50 && point.y > points[p].y && point.y < points[p+1].y) {
+            if (point.x > points[p].x-(radius/2) && point.x < points[p].x+(radius/2) && point.y > points[p].y && point.y < points[p+1].y) {
               return true;
             }
           }
         }
         if (points[p].y == points[p+1].y) {
           if (points[p].x > points[p+1].x) {
-            if (point.x > points[p+1].x && point.x < points[p].x && point.y > points[p+1].y-50 && point.y < points[p].y+50) {
+            if (point.x > points[p+1].x && point.x < points[p].x && point.y > points[p+1].y-(radius/2) && point.y < points[p].y+(radius/2)) {
               return true;
             }
           } else {
-            if (point.x > points[p].x && point.x < points[p+1].x && point.y > points[p+1].y-50 && point.y < points[p].y+50) {
+            if (point.x > points[p].x && point.x < points[p+1].x && point.y > points[p+1].y-(radius/2) && point.y < points[p].y+(radius/2)) {
+              return true;
+            }
+          }
+        }
+        if (dist(point.x, point.y, points[p].x, points[p].y) < (radius/2)) {
+          return true;
+        }
+        m = points[p].dir.y/points[p].dir.x;
+
+        yint = points[p].y-(m*points[p].x);
+        if (points[p].x < points[p+1].x) {
+          for (float x = points[p].x; x < points[p+1].x; x++) {
+            float y = (m*x) + yint;
+            if (dist(x, y, point.x, point.y) < (radius/2)) {
+              return true;
+            }
+          }
+        } else {
+          for (float x = points[p].x; x > points[p+1].x; x--) {
+            float y = (m*x) + yint;
+            if (dist(x, y, point.x, point.y) < (radius/2)) {
               return true;
             }
           }
@@ -39,6 +60,75 @@ class Path {
       }
     }
     return inpath;
+  }
+
+  Point nearestPoint(Pair point) {
+    boolean inpath = false;
+    for (int p = 0; p < points.length-1; p++) {
+      float m = 0;
+      float yint = 0;
+      if (p < points.length-1) {
+        if (points[p].x != points[p+1].x) {
+          m = (points[p].y-points[p+1].y)/(points[p].x-points[p+1].x);
+        } else {
+          if (points[p].y > points[p+1].y) {
+            if (point.x > points[p].x-15 && point.x < points[p].x+15 && point.y > points[p+1].y && point.y < points[p].y) {
+              return points[p];
+            }
+          } else {
+            if (point.x > points[p].x-15 && point.x < points[p].x+15 && point.y > points[p].y && point.y < points[p+1].y) {
+              return points[p];
+            }
+          }
+        }
+        if (points[p].y == points[p+1].y) {
+          if (points[p].x > points[p+1].x) {
+            if (point.x > points[p+1].x && point.x < points[p].x && point.y > points[p+1].y-15 && point.y < points[p].y+15) {
+              return points[p];
+            }
+          } else {
+            if (point.x > points[p].x && point.x < points[p+1].x && point.y > points[p+1].y-15 && point.y < points[p].y+15) {
+              return points[p];
+            }
+          }
+        }
+        if (dist(point.x, point.y, points[p].x, points[p].y) < 35) {
+          return points[p];
+        }
+        m = points[p].dir.y/points[p].dir.x;
+
+        yint = points[p].y-(m*points[p].x);
+        if (points[p].x < points[p+1].x) {
+          for (float x = points[p].x; x < points[p+1].x; x++) {
+            float y = (m*x) + yint;
+            fill(150);
+              
+            if (dist(x, y, point.x, point.y) < 15) {
+              
+              return points[p];
+            }
+          }
+        } else {
+          for (float x = points[p].x; x > points[p+1].x; x--) {
+            float y = (m*x) + yint;
+            fill(150);
+              
+            if (dist(x, y, point.x, point.y) < 15) {
+              
+              return points[p];
+            }
+          }
+        }
+      }
+    }
+    return points[0];
+  }
+  Pair randomPoint(Pair loc, float radius) {
+    Pair point = new Pair(random(loc.x-radius, loc.x+radius), random(loc.y-radius, loc.y+radius));
+    while(!pointInPath(point, 40)){
+      point = new Pair(random(loc.x-radius, loc.x+radius), random(loc.y-radius, loc.y+radius));
+    }
+   return point;
   }
 }
 
